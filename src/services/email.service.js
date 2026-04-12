@@ -10,6 +10,8 @@ const __dirname = path.dirname(__filename);
 class EmailService {
   constructor() {
     const smtpPort = parseInt(process.env.SMTP_PORT) || 465;
+    this.emailApiUrl = process.env.EMAIL_API_URL || '';
+    this.emailApiKey = process.env.EMAIL_API_KEY || '';
 
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -144,8 +146,12 @@ class EmailService {
    */
   async sendEmail({ to, subject, html, text }) {
     try {
+      if (this.emailApiUrl && this.emailApiKey) {
+        return await this.sendEmailViaWebhook({ to, subject, html, text });
+      }
+
       if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-        logger.warn('SMTP credentials not configured. Email not sent.');
+        logger.warn('SMTP credentials not configured and email webhook not set. Email not sent.');
         return;
       }
 
@@ -168,6 +174,31 @@ class EmailService {
       logger.error(`Failed to send email to ${to}:`, error);
       throw error;
     }
+  }
+
+  async sendEmailViaWebhook({ to, subject, html, text }) {
+    const response = await fetch(this.emailApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-email-api-key': this.emailApiKey,
+      },
+      body: JSON.stringify({
+        to,
+        subject,
+        html,
+        text: text || this.stripHtml(html),
+        from: this.from,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text();
+      throw new Error(`Email webhook failed (${response.status}): ${errorBody}`);
+    }
+
+    logger.info(`Email queued via Vercel email webhook for ${to}`);
+    return response.json().catch(() => null);
   }
 
   /**
@@ -361,6 +392,11 @@ class EmailService {
    */
   async verifyConnection() {
     try {
+      if (this.emailApiUrl && this.emailApiKey) {
+        logger.info('Email webhook configured; skipping direct SMTP verification');
+        return true;
+      }
+
       await this.transporter.verify();
       logger.info('SMTP connection verified successfully');
       return true;
