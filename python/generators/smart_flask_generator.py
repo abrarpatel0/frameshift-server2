@@ -5,6 +5,7 @@ Analyzes converted code and generates a proper, runnable Flask application
 
 import os
 import ast
+import re
 from pathlib import Path
 from typing import Dict, List, Set
 from ..utils.logger import logger
@@ -24,6 +25,7 @@ class SmartFlaskGenerator:
         self.has_auth = False
         self.has_forms = False
         self.dependencies = set()
+        self.app_module_names = {}
 
     def analyze_project(self):
         """Analyze converted code to understand project structure"""
@@ -34,6 +36,7 @@ class SmartFlaskGenerator:
         for item in self.project_path.iterdir():
             if item.is_dir() and not item.name.startswith(('.', '__')) and item.name not in excluded_dirs:
                 self.apps.append(item.name)
+                self.app_module_names[item.name] = self._to_module_name(item.name)
 
                 # Check if app has models
                 models_file = item / 'models.py'
@@ -87,7 +90,7 @@ class SmartFlaskGenerator:
         blueprints_register = []
 
         for app in self.apps:
-            bp_name = f"{app}_bp"
+            bp_name = f"{self._app_module_name(app)}_bp"
             blueprints_register.append(f"    app.register_blueprint({bp_name}, url_prefix='/{app}')")
 
         blueprints_register_str = '\n'.join(blueprints_register) if blueprints_register else "    # No blueprints to register"
@@ -173,7 +176,8 @@ if __name__ == '__main__':
         
         for app in self.apps:
             if app not in apps_done:
-                imports.append(f"    try:\n        from {app}.admin_views import init_admin_views\n        init_admin_views(admin)\n    except ImportError:\n        pass")
+                module_name = self._app_module_name(app)
+                imports.append(f"    try:\n        from {module_name}.admin_views import init_admin_views\n        init_admin_views(admin)\n    except ImportError:\n        pass")
                 apps_done.add(app)
                 
         return '\n'.join(imports) if imports else "    # No admin views found"
@@ -525,6 +529,18 @@ For issues with the conversion, please check the conversion report.
     def _generate_blueprint_imports(self) -> str:
         imports = []
         for app in self.apps:
-            bp_name = f"{app}_bp"
-            imports.append(f"    from {app}.routes import {bp_name}")
+            module_name = self._app_module_name(app)
+            bp_name = f"{module_name}_bp"
+            imports.append(f"    from {module_name}.routes import {bp_name}")
         return '\n'.join(imports) if imports else "    # No blueprints found"
+
+    def _to_module_name(self, name: str) -> str:
+        module_name = re.sub(r'[^0-9a-zA-Z_]+', '_', name).strip('_').lower()
+        if not module_name:
+            module_name = 'app'
+        if module_name[0].isdigit():
+            module_name = f'app_{module_name}'
+        return module_name
+
+    def _app_module_name(self, app_name: str) -> str:
+        return self.app_module_names.get(app_name, self._to_module_name(app_name))

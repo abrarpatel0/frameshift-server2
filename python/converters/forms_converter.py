@@ -51,7 +51,7 @@ class FormsConverter:
                 imports.append(f"from .models import {', '.join([alias.name for alias in node.names])}")
 
         if forms_code:
-            return "\\n".join(imports) + "\\n\\n" + "\\n\\n".join(forms_code)
+            return "\n".join(imports) + "\n\n" + "\n\n".join(forms_code)
         return ""
 
     def _convert_form_class(self, node: ast.ClassDef) -> str:
@@ -86,7 +86,7 @@ class FormsConverter:
             lines.append("    pass")
             
         lines.append("    submit = SubmitField('Submit')")
-        return "\\n".join(lines)
+        return "\n".join(lines)
 
     def _map_field(self, django_field: str) -> str:
         mapping = {

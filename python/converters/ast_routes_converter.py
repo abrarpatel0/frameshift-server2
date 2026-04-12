@@ -345,6 +345,7 @@ class ASTRoutesConverter:
             if not context_vars and view_info['database_queries']:
                 # Use query variables as context
                 context_vars = [q['variable'] for q in view_info['database_queries']]
+            context_vars = self._dedupe_preserve_order(context_vars)
 
             # Render template
             template = view_info.get('template_name', f"{view_info['name']}.html")
@@ -758,6 +759,16 @@ except ImportError:
         for match in re.findall(r'<(?:[^:>]+:)?([^>]+)>', route):
             params.append(match)
         return params
+
+    def _dedupe_preserve_order(self, items: List[str]) -> List[str]:
+        seen = set()
+        deduped = []
+        for item in items:
+            if not item or item in seen:
+                continue
+            seen.add(item)
+            deduped.append(item)
+        return deduped
 
     def _generate_auth_json_flow(self, view_info: Dict) -> List[str]:
         body = []
