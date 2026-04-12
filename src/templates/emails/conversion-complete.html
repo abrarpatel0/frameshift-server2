@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Complete</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #10b981;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .project-name {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .stats-container {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 10px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 5px;
+        }
+
+        .accuracy-score {
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 8px;
+            color: white;
+        }
+
+        .accuracy-value {
+            font-size: 48px;
+            font-weight: bold;
+        }
+
+        .accuracy-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .cta-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">FrameShift</div>
+            <div class="success-icon">✓</div>
+            <h1>Conversion Complete!</h1>
+            <p class="subtitle">Your Django project has been successfully converted to Flask</p>
+        </div>
+
+        <p>Hi {{userName}},</p>
+
+        <p>Great news! We've successfully converted your project <span class="project-name">{{projectName}}</span> from
+            Django to Flask.</p>
+
+        <div class="accuracy-score">
+            <div class="accuracy-value">{{accuracyScore}}%</div>
+            <div class="accuracy-label">Conversion Accuracy</div>
+        </div>
+
+        <div class="stats-container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value">{{modelsConverted}}</div>
+                    <div class="stat-label">Models Converted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{viewsConverted}}</div>
+                    <div class="stat-label">Views Converted</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{urlsConverted}}</div>
+                    <div class="stat-label">URL Patterns</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">{{templatesConverted}}</div>
+                    <div class="stat-label">Templates</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-container">
+            <a href="{{dashboardUrl}}" class="button">View Report & Download</a>
+        </div>
+
+        <p>Your converted Flask project is ready to download from your dashboard. We've also generated a detailed
+            conversion report with recommendations and best practices.</p>
+
+        <p><strong>Next Steps:</strong></p>
+        <ul>
+            <li>Review the conversion report for any manual adjustments needed</li>
+            <li>Test your Flask application thoroughly</li>
+            <li>Check the migration guide for database setup</li>
+            <li>Deploy your new Flask application</li>
+        </ul>
+
+        <div class="footer">
+            <p>Need help? <a href="mailto:support@frameshift.com">Contact our support team</a></p>
+            <p>&copy; 2025 FrameShift. All rights reserved.</p>
+            <p><a href="{{dashboardUrl}}">Dashboard</a> | <a href="https://frameshift.com/docs">Documentation</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,43 @@
+{
+  "version": "1.0.0",
+  "description": "Django URL patterns to Flask routes conversion rules",
+  "patterns": {
+    "path": {
+      "django": "path('articles/', views.articles)",
+      "flask": "@app.route('/articles/')\ndef articles():",
+      "note": "Flask routes are decorators on view functions"
+    },
+    "re_path": {
+      "django": "re_path(r'^articles/(?P<year>[0-9]{4})/$', views.year_archive)",
+      "flask": "@app.route('/articles/<int:year>/')\ndef year_archive(year):",
+      "note": "Flask uses <converter:variable> syntax"
+    },
+    "include": {
+      "django": "path('blog/', include('blog.urls'))",
+      "flask": "# Use Flask Blueprints",
+      "note": "Create Blueprint for each app"
+    }
+  },
+  "converters": {
+    "int": {
+      "django": "(?P<pk>[0-9]+)",
+      "flask": "<int:pk>"
+    },
+    "str": {
+      "django": "(?P<slug>[-\\w]+)",
+      "flask": "<string:slug>"
+    },
+    "uuid": {
+      "django": "(?P<id>[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})",
+      "flask": "<uuid:id>"
+    },
+    "path": {
+      "django": "(?P<path>.+)",
+      "flask": "<path:path>"
+    }
+  },
+  "blueprints": {
+    "note": "Each Django app should become a Flask Blueprint",
+    "template": "blog_bp = Blueprint('blog', __name__, url_prefix='/blog')"
+  }
+}

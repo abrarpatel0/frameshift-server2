@@ -1,0 +1,15 @@
+{
+  "watch": [
+    "src",
+    "database",
+    "package.json"
+  ],
+  "ext": "js,mjs,cjs,json",
+  "ignore": [
+    "storage/**",
+    "logs/**",
+    "python/**",
+    "node_modules/**"
+  ],
+  "exec": "node src/index.js"
+}

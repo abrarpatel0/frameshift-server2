@@ -1,0 +1,13 @@
+<!-- Converted from Django template to Jinja2 (Flask) -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+</head>
+<body>
+    <h2>Items</h2>
+    {% for item in items %}
+        <p>{{ item.name }} - ₹{{ item.price }}</p>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,136 @@
+{
+  "version": "1.0.0",
+  "description": "Django ORM to SQLAlchemy conversion rules",
+  "imports": {
+    "django.db.models": "from flask_sqlalchemy import SQLAlchemy",
+    "django.db": ""
+  },
+  "field_mappings": {
+    "CharField": {
+      "flask": "db.Column(db.String({max_length}))",
+      "params": ["max_length"],
+      "default_params": {"max_length": 255}
+    },
+    "TextField": {
+      "flask": "db.Column(db.Text)",
+      "params": []
+    },
+    "IntegerField": {
+      "flask": "db.Column(db.Integer)",
+      "params": []
+    },
+    "BigIntegerField": {
+      "flask": "db.Column(db.BigInteger)",
+      "params": []
+    },
+    "SmallIntegerField": {
+      "flask": "db.Column(db.SmallInteger)",
+      "params": []
+    },
+    "PositiveIntegerField": {
+      "flask": "db.Column(db.Integer)",
+      "params": [],
+      "note": "SQLAlchemy doesn't have PositiveInteger, use CheckConstraint"
+    },
+    "FloatField": {
+      "flask": "db.Column(db.Float)",
+      "params": []
+    },
+    "DecimalField": {
+      "flask": "db.Column(db.Numeric(precision={max_digits}, scale={decimal_places}))",
+      "params": ["max_digits", "decimal_places"]
+    },
+    "BooleanField": {
+      "flask": "db.Column(db.Boolean, default=False)",
+      "params": []
+    },
+    "DateField": {
+      "flask": "db.Column(db.Date)",
+      "params": []
+    },
+    "DateTimeField": {
+      "flask": "db.Column(db.DateTime)",
+      "params": [],
+      "auto_now": "db.Column(db.DateTime, onupdate=db.func.now())",
+      "auto_now_add": "db.Column(db.DateTime, default=db.func.now())"
+    },
+    "TimeField": {
+      "flask": "db.Column(db.Time)",
+      "params": []
+    },
+    "EmailField": {
+      "flask": "db.Column(db.String(254))",
+      "params": [],
+      "note": "Add email validation in forms or use SQLAlchemy-Utils EmailType"
+    },
+    "URLField": {
+      "flask": "db.Column(db.String(200))",
+      "params": [],
+      "note": "Add URL validation in forms or use SQLAlchemy-Utils URLType"
+    },
+    "SlugField": {
+      "flask": "db.Column(db.String({max_length}))",
+      "params": ["max_length"],
+      "default_params": {"max_length": 50}
+    },
+    "UUIDField": {
+      "flask": "db.Column(db.String(36))",
+      "params": [],
+      "note": "Or use SQLAlchemy UUID type"
+    },
+    "JSONField": {
+      "flask": "db.Column(db.JSON)",
+      "params": []
+    },
+    "BinaryField": {
+      "flask": "db.Column(db.LargeBinary)",
+      "params": []
+    },
+    "ForeignKey": {
+      "flask": "db.Column(db.Integer, db.ForeignKey('{related_model}.id'))",
+      "params": ["related_model", "on_delete"],
+      "relationship": "db.relationship('{related_model}', backref='{backref}')",
+      "note": "on_delete handled differently in SQLAlchemy"
+    },
+    "OneToOneField": {
+      "flask": "db.Column(db.Integer, db.ForeignKey('{related_model}.id'), unique=True)",
+      "params": ["related_model", "on_delete"],
+      "relationship": "db.relationship('{related_model}', backref=db.backref('{backref}', uselist=False))"
+    },
+    "ManyToManyField": {
+      "flask": "# ManyToMany requires association table",
+      "params": ["related_model"],
+      "note": "Requires creating association table"
+    }
+  },
+  "field_options": {
+    "null": {
+      "True": "nullable=True",
+      "False": "nullable=False"
+    },
+    "blank": {
+      "note": "Blank is a form validation concept, not database level"
+    },
+    "default": {
+      "pattern": "default={value}"
+    },
+    "unique": {
+      "True": "unique=True",
+      "False": ""
+    },
+    "primary_key": {
+      "True": "primary_key=True",
+      "False": ""
+    },
+    "db_index": {
+      "True": "index=True",
+      "False": ""
+    }
+  },
+  "meta_class": {
+    "db_table": "__tablename__",
+    "ordering": "# Use query().order_by() instead",
+    "verbose_name": "# Not supported in SQLAlchemy",
+    "unique_together": "# Use __table_args__ with UniqueConstraint"
+  }
+}

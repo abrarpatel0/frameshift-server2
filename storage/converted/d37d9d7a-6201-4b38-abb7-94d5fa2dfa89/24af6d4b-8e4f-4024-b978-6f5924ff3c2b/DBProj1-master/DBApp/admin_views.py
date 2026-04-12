@@ -1,0 +1,1 @@
+from flask_admin.contrib.sqla import ModelView\nfrom extensions import db\nfrom .models import *\n\nclass StudentAdminView(ModelView):\n\n    pass  # Auto-mapped from admin.site.register\n\ndef init_admin_views(admin_app):\n    admin_app.add_view(StudentAdminView(Student, db.session))\n

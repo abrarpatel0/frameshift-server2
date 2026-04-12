@@ -1,0 +1,50 @@
+{
+  "version": "1.0.0",
+  "description": "Django views to Flask routes conversion rules",
+  "imports": {
+    "django.http": "from flask import jsonify, request, redirect, url_for",
+    "django.shortcuts": "from flask import render_template",
+    "django.views": "# Flask uses function-based views or Flask-Classy for CBV",
+    "django.views.generic": "# Use Flask-Classy or custom base classes"
+  },
+  "view_types": {
+    "function_based": {
+      "pattern": "def view_name(request):",
+      "flask": "@app.route('/path', methods=['GET', 'POST'])\ndef view_name():",
+      "note": "request is a global object in Flask"
+    },
+    "class_based": {
+      "View": "# Use Flask-Classy View or MethodView",
+      "TemplateView": "# Render template in route function",
+      "ListView": "# Query and pass to template",
+      "DetailView": "# Query single object and pass to template",
+      "CreateView": "# Handle form submission",
+      "UpdateView": "# Handle form submission with existing object",
+      "DeleteView": "# Handle delete and redirect"
+    }
+  },
+  "http_methods": {
+    "HttpResponse": "return response_text",
+    "JsonResponse": "return jsonify(data)",
+    "HttpResponseRedirect": "return redirect(url)",
+    "render": "return render_template('template.html', context)"
+  },
+  "request_attributes": {
+    "request.GET": "request.args",
+    "request.POST": "request.form",
+    "request.body": "request.data",
+    "request.method": "request.method",
+    "request.user": "current_user (from flask_login)",
+    "request.session": "session",
+    "request.FILES": "request.files"
+  },
+  "decorators": {
+    "login_required": "@login_required (from flask_login)",
+    "permission_required": "# Use flask_principal or custom decorator",
+    "csrf_exempt": "# Flask has CSRF protection via Flask-WTF"
+  },
+  "url_reverse": {
+    "reverse": "url_for('view_name')",
+    "reverse_lazy": "url_for('view_name')"
+  }
+}

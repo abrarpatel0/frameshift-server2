@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversion Failed</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .email-container {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2563eb;
+            margin-bottom: 10px;
+        }
+
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            color: white;
+        }
+
+        h1 {
+            color: #1f2937;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 16px;
+        }
+
+        .project-name {
+            font-weight: bold;
+            color: #2563eb;
+        }
+
+        .error-box {
+            background-color: #fef2f2;
+            border-left: 4px solid #ef4444;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .error-title {
+            font-weight: bold;
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .error-message {
+            color: #7f1d1d;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            background-color: #fee2e2;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .troubleshooting {
+            background-color: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .troubleshooting h3 {
+            color: #1f2937;
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        .troubleshooting ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .troubleshooting li {
+            margin: 8px 0;
+            color: #4b5563;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 14px 32px;
+            background-color: #2563eb;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 600;
+            margin: 10px 5px;
+            text-align: center;
+        }
+
+        .button:hover {
+            background-color: #1d4ed8;
+        }
+
+        .button-secondary {
+            background-color: #6b7280;
+        }
+
+        .button-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .cta-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .footer a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .support-banner {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .support-banner h3 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+        }
+
+        .support-banner p {
+            margin: 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">FrameShift</div>
+            <div class="error-icon">✕</div>
+            <h1>Conversion Failed</h1>
+            <p class="subtitle">We encountered an issue converting your project</p>
+        </div>
+
+        <p>Hi {{userName}},</p>
+
+        <p>We encountered an error while converting your project <span class="project-name">{{projectName}}</span> from
+            Django to Flask.</p>
+
+        <div class="error-box">
+            <div class="error-title">Error Details:</div>
+            <div class="error-message">{{errorMessage}}</div>
+        </div>
+
+        <div class="troubleshooting">
+            <h3>Common Issues & Solutions:</h3>
+            <ul>
+                <li><strong>File Encoding Issues:</strong> Make sure all files are UTF-8 encoded. Check for special
+                    characters or binary files in your project.</li>
+                <li><strong>Unsupported Framework:</strong> Ensure your project is a valid Django project with manage.py
+                    and settings.py files.</li>
+                <li><strong>Large Files:</strong> Remove any large media files, databases, or binary files before
+                    uploading.</li>
+                <li><strong>Missing Dependencies:</strong> Make sure requirements.txt is included and properly
+                    formatted.</li>
+                <li><strong>Corrupted Upload:</strong> Try re-uploading your project as the file might have been
+                    corrupted during upload.</li>
+            </ul>
+        </div>
+
+        <div class="support-banner">
+            <h3>Need Help?</h3>
+            <p>Our support team is here to assist you with the conversion process</p>
+        </div>
+
+        <div class="cta-container">
+            <a href="{{dashboardUrl}}" class="button">Try Again</a>
+            <a href="mailto:support@frameshift.com?subject=Conversion Failed: {{projectName}}&body=Job ID: {{jobId}}%0D%0AError: {{errorMessage}}"
+                class="button button-secondary">Contact Support</a>
+        </div>
+
+        <p><strong>What to do next:</strong></p>
+        <ul>
+            <li>Check the error message above for specific details</li>
+            <li>Review the common issues and try the suggested solutions</li>
+            <li>Make sure your project structure follows Django conventions</li>
+            <li>Try uploading your project again</li>
+            <li>Contact our support team if the issue persists</li>
+        </ul>
+
+        <p>We're sorry for the inconvenience. We're constantly improving our conversion engine to handle more edge
+            cases.</p>
+
+        <div class="footer">
+            <p>Need help? <a href="mailto:support@frameshift.com">Contact our support team</a></p>
+            <p>&copy; 2025 FrameShift. All rights reserved.</p>
+            <p><a href="{{dashboardUrl}}">Dashboard</a> | <a href="https://frameshift.com/docs">Documentation</a> | <a
+                    href="https://frameshift.com/faq">FAQ</a></p>
+        </div>
+    </div>
+</body>
+
+</html>

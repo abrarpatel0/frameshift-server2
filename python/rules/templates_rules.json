@@ -1,0 +1,33 @@
+{
+  "version": "1.0.0",
+  "description": "Django templates to Jinja2 templates conversion rules",
+  "note": "Django templates and Jinja2 are very similar, minor differences",
+  "tags": {
+    "{% load static %}": "# Not needed in Flask, use url_for('static', filename='...')",
+    "{% load %}": "# Most Django template tags don't exist in Jinja2",
+    "{% url 'view_name' %}": "{{ url_for('view_name') }}",
+    "{% static 'path' %}": "{{ url_for('static', filename='path') }}",
+    "{% csrf_token %}": "# Use {{ csrf_token() }} with Flask-WTF",
+    "{% block %}": "{% block %} (same)",
+    "{% extends %}": "{% extends %} (same)",
+    "{% include %}": "{% include %} (same)",
+    "{% for %}": "{% for %} (same)",
+    "{% if %}": "{% if %} (same)"
+  },
+  "filters": {
+    "|date": "|strftime or custom filter",
+    "|default": "|default (same)",
+    "|length": "|length (same)",
+    "|lower": "|lower (same)",
+    "|upper": "|upper (same)",
+    "|title": "|title (same)",
+    "|truncatewords": "|truncate",
+    "|safe": "|safe (same)",
+    "|escape": "|escape (same)"
+  },
+  "variables": {
+    "{{ variable }}": "{{ variable }} (same)",
+    "{{ object.field }}": "{{ object.field }} (same)",
+    "{{ dict.key }}": "{{ dict.key }} or {{ dict['key'] }}"
+  }
+}

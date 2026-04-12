@@ -1,0 +1,40 @@
+<!-- Converted from Django template to Jinja2 (Flask) -->
+<html>
+<head>
+	<title> Student List</title>
+	</head> 
+	<body>
+	<h2> List of Students-</h2>
+
+	<table border =10>
+		<tr><th>ID</th>
+			<th>Name</th>
+			<th>Email</th>
+			<th>Age</th>
+			<th>DoJ</th>
+			<th> Delete</th>
+			<th> Update</th>
+		</tr>
+		{% for student in students %}
+		<tr>
+			<td>{{ student.id }}</td>
+			<td>{{ student.name }} </td>
+			<td>{{ student.email }} </td>
+			<td>{{ student.age }} </td>
+			<td>{{ student.joined_date }} </td>
+			<td> <a href = "{{ url_for('student_delete') }}"> Delete </a>  </td>
+			<td> <a href = "{{ url_for('student_update') }}"> Update </a>  </td>
+
+
+
+		</tr>
+		{% endfor %}
+		</table>
+<br> <br>
+		<a href="{% url 'student_create') }}"> Add New Student</a>
+</body>	
+	
+	</html>
+
+
+
