@@ -3,6 +3,62 @@ import { query } from '../config/database.js';
 /**
  * Report model for database operations
  */
+const sanitizeUnicodeString = (value) => {
+  if (typeof value !== 'string') {
+    return value;
+  }
+
+  let sanitized = '';
+
+  for (let index = 0; index < value.length; index += 1) {
+    const codeUnit = value.charCodeAt(index);
+
+    if (codeUnit === 0) {
+      continue;
+    }
+
+    const isHighSurrogate = codeUnit >= 0xD800 && codeUnit <= 0xDBFF;
+    const isLowSurrogate = codeUnit >= 0xDC00 && codeUnit <= 0xDFFF;
+
+    if (isHighSurrogate) {
+      const nextCodeUnit = value.charCodeAt(index + 1);
+      const hasValidPair = nextCodeUnit >= 0xDC00 && nextCodeUnit <= 0xDFFF;
+
+      if (hasValidPair) {
+        sanitized += value[index] + value[index + 1];
+        index += 1;
+      }
+
+      continue;
+    }
+
+    if (isLowSurrogate) {
+      continue;
+    }
+
+    sanitized += value[index];
+  }
+
+  return sanitized;
+};
+
+const sanitizeJsonValue = (value) => {
+  if (Array.isArray(value)) {
+    return value.map(sanitizeJsonValue);
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entryValue]) => [
+        sanitizeUnicodeString(key),
+        sanitizeJsonValue(entryValue)
+      ])
+    );
+  }
+
+  return sanitizeUnicodeString(value);
+};
+
 // Whitelist of columns that can be updated
 const VALID_UPDATE_COLUMNS = [
   'accuracy_score', 'total_files_converted', 'models_converted',
@@ -36,17 +92,25 @@ export class ReportModel {
       manual_changes = null
     } = reportData;
 
+    const sanitizedIssues = issues ? sanitizeJsonValue(issues) : null;
+    const sanitizedWarnings = warnings ? sanitizeJsonValue(warnings) : null;
+    const sanitizedSuggestions = suggestions ? sanitizeJsonValue(suggestions) : null;
+    const sanitizedGeminiVerification = gemini_verification ? sanitizeJsonValue(gemini_verification) : null;
+    const sanitizedSummary = sanitizeUnicodeString(summary);
+    const sanitizedFileDiffs = file_diffs ? sanitizeJsonValue(file_diffs) : null;
+    const sanitizedManualChanges = manual_changes ? sanitizeJsonValue(manual_changes) : null;
+
     const values = [
       conversion_job_id, accuracy_score, total_files_converted,
       models_converted, views_converted, urls_converted, forms_converted,
       templates_converted,
-      issues ? JSON.stringify(issues) : null,
-      warnings ? JSON.stringify(warnings) : null,
-      suggestions ? JSON.stringify(suggestions) : null,
-      gemini_verification ? JSON.stringify(gemini_verification) : null,
-      summary,
-      file_diffs ? JSON.stringify(file_diffs) : null,
-      manual_changes ? JSON.stringify(manual_changes) : null
+      sanitizedIssues ? JSON.stringify(sanitizedIssues) : null,
+      sanitizedWarnings ? JSON.stringify(sanitizedWarnings) : null,
+      sanitizedSuggestions ? JSON.stringify(sanitizedSuggestions) : null,
+      sanitizedGeminiVerification ? JSON.stringify(sanitizedGeminiVerification) : null,
+      sanitizedSummary,
+      sanitizedFileDiffs ? JSON.stringify(sanitizedFileDiffs) : null,
+      sanitizedManualChanges ? JSON.stringify(sanitizedManualChanges) : null
     ];
 
     try {
@@ -180,10 +244,10 @@ export class ReportModel {
       // JSON fields need to be stringified
       if (['issues', 'warnings', 'suggestions', 'gemini_verification', 'file_diffs', 'manual_changes'].includes(key) && value !== null) {
         fields.push(`${key} = $${paramIndex}`);
-        values.push(JSON.stringify(value));
+        values.push(JSON.stringify(sanitizeJsonValue(value)));
       } else {
         fields.push(`${key} = $${paramIndex}`);
-        values.push(value);
+        values.push(sanitizeUnicodeString(value));
       }
       paramIndex++;
     });
